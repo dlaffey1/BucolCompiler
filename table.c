@@ -3,8 +3,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define HASH_SIZE 101
-static Variable *variableTable[HASH_SIZE];
+static Variable variableTable[HASH_SIZE]; // Use a simple array instead of linked list
+
+// Function to initialize the table
+void initializeTable() {
+    for (int i = 0; i < HASH_SIZE; i++) {
+        variableTable[i].identifier = NULL;
+    }
+}
 
 // Hash function: form hash value for string s
 unsigned hash(char *s) {
@@ -15,46 +21,45 @@ unsigned hash(char *s) {
 }
 
 Variable *lookup(char *identifier) {
-    Variable *np;
-    for (np = variableTable[hash(identifier)]; np != NULL;
-         np = np->next) // Traverse the linked list
-        if (strcmp(identifier, np->identifier) == 0) {
-            return np; // Found
+    unsigned index = hash(identifier);
+    unsigned i = index;
 
+    int count = 0;
+    do {
+        if (variableTable[i].identifier != NULL && strcmp(identifier, variableTable[i].identifier) == 0) {
+            return &variableTable[i]; // Found
         }
+        i = (i + count * count) % HASH_SIZE; // Quadratic probing
+        count++;
+    } while (variableTable[i].identifier != NULL && i != index);
 
     return NULL; // Not found
 }
 
 Variable *insert(char *identifier, int size) {
-    unsigned hashval;
-    Variable *np;
+    unsigned index = hash(identifier);
+    unsigned i = index;
 
-    if ((np = lookup(identifier)) == NULL) { // Not found
-        np = (Variable *)malloc(sizeof(*np));
+    int count = 0;
+    do {
+        if (variableTable[i].identifier == NULL || strcmp(identifier, variableTable[i].identifier) == 0) {
+            variableTable[i].identifier = strdup(identifier);
+            variableTable[i].size = size;
+            variableTable[i].value = 0; // Initialize value to 0
+            return &variableTable[i];
+        }
+        i = (i + count * count) % HASH_SIZE; // Quadratic probing
+        count++;
+    } while (variableTable[i].identifier != NULL && i != index);
 
-        if (np == NULL || (np->identifier = strdup(identifier)) == NULL)
-            return NULL;
-
-        hashval = hash(identifier);
-        np->next = variableTable[hashval];
-        variableTable[hashval] = np;
-    }
-    np->size = size;
-    np->value = 0; // Initialize value to 0
-
-    return np;
+    return NULL; // Hash table is full
 }
 
 void printTable() {
     for (int i = 0; i < HASH_SIZE; i++) {
-        Variable *np;
-        for (np = variableTable[i]; np != NULL; np = np->next) {
-            if (np == NULL) {
-                continue;
-            }
+        if (variableTable[i].identifier != NULL) {
             printf("Variable: hash: %d, identifier: %s, size: %d, value: %d\n",
-                   i, np->identifier, np->size, np->value);
+                   i, variableTable[i].identifier, variableTable[i].size, variableTable[i].value);
         }
     }
 }

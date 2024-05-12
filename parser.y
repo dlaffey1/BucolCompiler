@@ -22,7 +22,7 @@ bool valid = true;
 %token <str> ID INTLITERAL STRINGLITERAL
 %token <size> CAPACITY
 
-%token ENDSTMT BEGINING BODY END TO MOVE ADD INPUT PRINT SEP
+%token FULLSTOP BEGINING BODY END TO MOVE ADD INPUT PRINT SEP
 %type <str> var operand
 %%
 
@@ -35,19 +35,19 @@ program: begining declarations body statements end {
 } 
 
 declarations: declaration | declarations declaration {
-    // This means there has to be at least one declaration
+
 }
 
-begining: BEGINING ENDSTMT {
-    printf("BEGINING rule matched\n");
+begining: BEGINING FULLSTOP {
+//    printf("BEGINING rule matched\n");
 }
 
-body: BODY ENDSTMT {
-    printf("BODY rule matched\n");
+body: BODY FULLSTOP {
+//   printf("BODY rule matched\n");
 }
 
-end: END ENDSTMT {
-    printf("END rule matched\n");
+end: END FULLSTOP {
+//    printf("END rule matched\n");
 }
 
 statements: statement | statements statement {
@@ -57,47 +57,48 @@ statement: assignment | addition | declaration | input | print | unrecognized_st
 
 unrecognized_statement: { printf("Unrecognized statement: %s\n", yytext); }
 
-declaration: CAPACITY ID ENDSTMT
+declaration: CAPACITY ID FULLSTOP
 {
     valid = valid && declareVariable($2, $1);
     if (!valid) {
-        printf("Declaration rule failed: CAPACITY %s\n", $2);
+//        printf("Declaration rule failed: CAPACITY %s\n", $2);
     } else {
-        printf("Declaration rule succeeded: CAPACITY %s\n", $2);
+//        printf("Declaration rule succeeded: CAPACITY %s\n", $2);
     }
 }
 
-assignment: MOVE INTLITERAL TO ID ENDSTMT
+assignment: MOVE INTLITERAL TO ID FULLSTOP
 {
     valid = valid && moveINTtoID($2, $4);
-    printf("Assignment: MOVE INTLITERAL %s TO ID %s\n", $2, $4);
+//    printf("Assignment: MOVE INTLITERAL %s TO ID %s\n", $2, $4);
 }
-| MOVE ID TO ID ENDSTMT
+| MOVE ID TO ID FULLSTOP
 {
-    printf("Assignment: MOVE INTLITERAL %s TO ID %s\n", $2, $4);
+//    printf("Assignment: MOVE INTLITERAL %s TO ID %s\n", $2, $4);
     valid = valid && moveIDtoID($2, $4);
 }
 
 
 
-addition: ADD operand TO ID ENDSTMT
+addition: ADD operand TO ID FULLSTOP
 {
-    printf("Addition: ADD operand %s TO ID %s\n", $2, $4);
+ //   printf("Addition: ADD operand %s TO ID %s\n", $2, $4);
     valid = valid && addINTtoID($2, $4);
     
 }
-| ADD ID TO ID ENDSTMT
+| ADD ID TO ID FULLSTOP
 {
-    printf("Addition: ADD ID %s TO ID %s\n", $2, $4);
+ //   printf("Addition: ADD ID %s TO ID %s\n", $2, $4);
     valid = valid && addIDtoID($2, $4);
     
 }
-operand: INTLITERAL { $$ = $1; printf("Operand: INTLITERAL %s\n", $1); }
+operand: INTLITERAL { $$ = $1; 
+//printf("Operand: INTLITERAL %s\n", $1); 
+}
 
 
-input: INPUT input_list ENDSTMT {
-    printf("Input statement: succeeded\n");
-    // Implement the action for processing the input statement here
+input: INPUT input_list FULLSTOP {
+//    printf("Input statement: succeeded\n");
 }
 
 
@@ -105,32 +106,32 @@ input: INPUT input_list ENDSTMT {
 input_list : var SEP input_list 
 		   | var
 
-print: PRINT printlist ENDSTMT {
-    printf("PRINT rule succeeded\n");
+print: PRINT printlist FULLSTOP {
+//    printf("PRINT rule succeeded\n");
 }
 
-printlist: /* empty */ {
-    printf("Printlist: empty\n");
+printlist: {
+//    printf("Printlist: empty\n");
 }
          | STRINGLITERAL {
-             printf("Printlist: STRINGLITERAL %s\n", $1);
+//             printf("Printlist: STRINGLITERAL %s\n", $1);
          }
          | var {
-             printf("Printlist: var %s\n", $1);
+//             printf("Printlist: var %s\n", $1);
          }
          | STRINGLITERAL SEP printlist {
-             printf("Printlist: STRINGLITERAL %s SEP\n", $1);
+//             printf("Printlist: STRINGLITERAL %s SEP\n", $1);
          }
          | var SEP printlist {
-             printf("Printlist: var %s SEP\n", $1);
+//            printf("Printlist: var %s SEP\n", $1);
          }
          ;
 
 
 var: ID {
    valid = valid && checkIsDeclared($1);
-   printf("Variable: %s\n", $1);
-   $$ = $1; // Assigning the value of the ID to the output
+//   printf("Variable: %s\n", $1);
+   $$ = $1;
 }
 %%
 
@@ -148,6 +149,5 @@ void yyerror(char *s) {
     valid = false;
     fprintf(stderr, "Syntax error: %s\n", s);
 
-    // Add debug print to identify which token caused the syntax error
     printf("Syntax error occurred. Last token read: %s\n", yytext);
 }

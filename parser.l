@@ -12,7 +12,7 @@ CHAR [A-Za-z1-9-]
 %%
 [ \r\t\n]* ;
 
-"." return(ENDSTMT);
+"." return(FULLSTOP);
 ";" return(SEP);
 
 "BEGINING" return(BEGINING);
@@ -22,7 +22,7 @@ CHAR [A-Za-z1-9-]
 
 ^X+ {
     yylval.size = strlen(yytext);
-    printf("Read token X: %s\n", yytext); // Add this line for debug
+//   printf("Read token X: %s\n", yytext); // Add this line for debug
     return(CAPACITY);
 }
 "TO" return(TO);
@@ -33,7 +33,7 @@ CHAR [A-Za-z1-9-]
 
 [A-Za-z][A-Za-z1-9-]* {
     yylval.str = strdup(yytext);
-    printf("Read token ID: %s\n", yytext);
+//    printf("Read token ID: %s\n", yytext);
     return(ID);
 }
 
@@ -51,11 +51,11 @@ CHAR [A-Za-z1-9-]
 
     if (isNumeric) {
         yylval.str = strdup(yytext);
-        printf("Read token INTLITERAL: %s\n", yytext);
+//        printf("Read token INTLITERAL: %s\n", yytext);
         return(INTLITERAL);
     } else {
         // Handle the case where the token is not purely numeric
-        printf("Syntax error: Invalid token: %s\n", yytext);
+//        printf("Syntax error: Invalid token: %s\n", yytext);
         // You can add additional error handling or return a different token here if needed
         return(0); // Returning 0 to indicate an error
     }
@@ -63,7 +63,7 @@ CHAR [A-Za-z1-9-]
 
 [0-9]+ { 
     yylval.str = strdup(yytext);
-    printf("Read token INTLITERAL: %s\n", yytext); // Debug print for INTLITERAL token
+//   printf("Read token INTLITERAL: %s\n", yytext); // Debug print for INTLITERAL token
     return(INTLITERAL);
 }
 
@@ -71,7 +71,7 @@ CHAR [A-Za-z1-9-]
 
 \"[^";.]*\" { 
     yylval.str = strdup(yytext);
-    printf("Read token STRINGLITERAL: %s\n", yytext); // Debug print for STRINGLITERAL token
+//    printf("Read token STRINGLITERAL: %s\n", yytext); // Debug print for STRINGLITERAL token
     return(STRINGLITERAL);
 }
 
