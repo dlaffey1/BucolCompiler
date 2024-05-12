@@ -6,81 +6,81 @@
 #include <string.h>
 #include <ctype.h>
 
-bool declareVariable(char *identifier, int size) {
-    if (lookup(identifier) != NULL) {
-        printf("Error: variable %s already declared\n", identifier);
+bool declareVariable(char *varName, int size) {
+    if (lookup(varName) != NULL) {
+        printf("Error: variable %s already declared\n", varName);
         return false;
     }
 
-    if (insert(identifier, size) == NULL) {
-        printf("Error: cannot insert variable %s\n", identifier);
+    if (insert(varName, size) == NULL) {
+        printf("Error: unable to insert variable %s\n", varName);
         return false;
     }
 
     return true;
 }
 
-bool moveIDtoID(char *source_id, char *dest_id) {
-    Variable *source = lookup(source_id);
-    Variable *dest = lookup(dest_id);
+bool moveIDtoID(char *sourceID, char *destID) {
+    Variable *src = lookup(sourceID);
+    Variable *dest = lookup(destID);
 
-    if (source == NULL) {
-        printf("Error: variable %s not declared\n", source_id);
+    if (src == NULL) {
+        printf("Error: variable %s not declared\n", sourceID);
         return false;
     }
     if (dest == NULL) {
-        printf("Error: variable %s not declared\n", dest_id);
+        printf("Error: variable %s not declared\n", destID);
         return false;
     }
 
-    dest->value = source->value;
+    dest->value = src->value;
     return true;
 }
 
-bool moveINTtoID(char *int_literal, char *dest_id) {
-    Variable *dest = lookup(dest_id);
+bool moveINTtoID(char *intLiteral, char *destID) {
+    Variable *dest = lookup(destID);
 
     if (dest == NULL) {
-        printf("Error: variable %s not declared\n", dest_id);
+        printf("Error: variable %s not declared\n", destID);
         return false;
     }
 
-    dest->value = atoi(int_literal);
+    dest->value = atoi(intLiteral);
     return true;
 }
 
-bool addIDtoID(char *source_id, char *dest_id) {
-    Variable *source = lookup(source_id);
-    Variable *dest = lookup(dest_id);
+bool addIDtoID(char *sourceID, char *destID) {
+    Variable *src = lookup(sourceID);
+    Variable *dest = lookup(destID);
 
-    if (source == NULL) {
-        printf("Error: variable %s not declared\n", source_id);
+    if (src == NULL) {
+        printf("Error: variable %s not declared\n", sourceID);
         return false;
     }
     if (dest == NULL) {
-        printf("Error: variable %s not declared\n", dest_id);
+        printf("Error: variable %s not declared\n", destID);
         return false;
     }
 
-    dest->value += source->value;
+    dest->value += src->value;
     return true;
 }
 
-bool addINTtoID(char *int_literal, char *dest_id) {
-    Variable *dest = lookup(dest_id);
+bool addINTtoID(char *intLiteral, char *destID) {
+    Variable *dest = lookup(destID);
 
     if (dest == NULL) {
-        printf("Error: variable %s not declared\n", dest_id);
+        printf("Error: variable %s not declared\n", destID);
         return false;
     }
 
-    dest->value += atoi(int_literal);
+    dest->value += atoi(intLiteral);
     return true;
 }
 
-bool checkIsDeclared(char *id) {
-    if (lookup(id) == NULL) {
-        printf("Error: variable %s not declared\n", id);
+bool checkIsDeclared(char *varName) {
+    if (lookup(varName) == NULL) {
+        printf("Error: variable %s not declared\n", varName);
         return false;
     }
     return true;
