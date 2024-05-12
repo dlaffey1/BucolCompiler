@@ -83,11 +83,14 @@ assignment: MOVE INTLITERAL TO ID ENDSTMT
 addition: ADD operand TO ID ENDSTMT
 {
     printf("Addition: ADD operand %s TO ID %s\n", $2, $4);
-    if (isIntLiteral($2)) {
-        valid = valid && addINTtoID($2, $4);
-    } else {
-        valid = valid && addIDtoID($2, $4);
-    }
+    valid = valid && addINTtoID($2, $4);
+    
+}
+| ADD ID TO ID ENDSTMT
+{
+    printf("Addition: ADD ID %s TO ID %s\n", $2, $4);
+    valid = valid && addIDtoID($2, $4);
+    
 }
 operand: INTLITERAL { $$ = $1; printf("Operand: INTLITERAL %s\n", $1); }
 
